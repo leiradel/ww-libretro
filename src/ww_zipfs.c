@@ -14,6 +14,10 @@ void ww_zipfs_destroy(void) {
     ww_zipfs_file = NULL;
 }
 
+int ww_zipfs_exists(char const* file_path) {
+    return unzLocateFile(ww_zipfs_file, file_path, 1) == UNZ_OK;
+}
+
 void* ww_zipfs_read(char const* file_path, size_t* const size) {
     if (ww_zipfs_file == NULL) {
         return NULL;

@@ -6,6 +6,7 @@
 int  ww_zipfs_init(char const* zip_path);
 void ww_zipfs_destroy(void);
 
+int   ww_zipfs_exists(char const* file_path);
 void* ww_zipfs_read(char const* file_path, size_t* size);
 
 #endif /* WW_ZIPFS_H */
