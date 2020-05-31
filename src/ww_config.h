@@ -1,8 +1,11 @@
 #ifndef WW_CONFIG_H
 #define WW_CONFIG_H
 
-/* Maximum players. */
+/* Maximum number of players. */
 #define WW_MAX_PLAYERS (4)
+
+/* Maximum number of tiles. */
+#define WW_MAX_TILES (32)
 
 /* The maximum *total* number of sprites. */
 #define WW_MAX_SPRITES (16)
