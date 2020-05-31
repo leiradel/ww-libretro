@@ -1,3 +1,5 @@
+src/ww_version.h
+
 # Prerequisites
 *.d
 
