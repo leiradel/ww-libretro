@@ -31,7 +31,7 @@ ZLIB_OBJ_FILES = \
 
 WW_OBJ_FILES = \
 	src/ww_backgrnd.o \
-	src/ww_image.o \
+	src/ww_tile.o \
 	src/ww_zipfs.o
 
 OBJ_FILES = \

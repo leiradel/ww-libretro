@@ -1,4 +1,4 @@
-#include "ww_image.h"
+#include "ww_tile.h"
 #include "ww_config.h"
 
 #include <stdlib.h>

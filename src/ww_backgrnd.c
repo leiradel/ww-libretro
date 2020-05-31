@@ -1,6 +1,6 @@
 #include "ww_backgrnd.h"
+#include "ww_tile.h"
 #include "ww_config.h"
-#include "ww_image.h"
 
 #include <string.h>
 
