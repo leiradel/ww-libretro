@@ -106,7 +106,7 @@ void ww_backgrnd_render(uint32_t* const canvas, unsigned const player, unsigned 
             int x0 = -(dx % WW_TILE_SIZE);
 
             for (unsigned x = 0; x < WW_BACKGRND_WIDTH; x++, x0 += WW_TILE_SIZE) {
-                ww_image_blit(canvas, ww_tiles[player][y][x], x0, y0);
+                ww_tile_blit(canvas, ww_tiles[player][y][x], x0, y0);
             }
         }
     }
