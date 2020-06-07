@@ -2,6 +2,7 @@
 #define WW_BACKGRND_H
 
 #include <stdint.h>
+#include <stddef.h>
 
 int  ww_backgrnd_init(void);
 void ww_backgrnd_destroy(void);
@@ -14,6 +15,6 @@ int  ww_backgrnd_scroll_right(unsigned player, uint8_t tile);
 int  ww_backgrnd_scroll_up(unsigned player, uint8_t tile);
 int  ww_backgrnd_scroll_down(unsigned player, uint8_t tile);
 
-void ww_backgrnd_render(uint32_t* canvas, unsigned player, unsigned dx, unsigned dy);
+void ww_backgrnd_render(uint32_t* canvas, size_t pitch, unsigned player, unsigned dx, unsigned dy);
 
 #endif // WW_BACKGRND_H

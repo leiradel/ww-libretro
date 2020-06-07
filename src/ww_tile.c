@@ -186,7 +186,7 @@ error2:
     return 0;
 }
 
-void ww_tile_blit(uint32_t* canvas, uint8_t const tile_num, int x0, int y0) {
+void ww_tile_blit(uint32_t* canvas, size_t const pitch, uint8_t const tile_num, int x0, int y0) {
     int width = WW_TILE_SIZE;
     int ox = 0;
 
@@ -219,7 +219,7 @@ void ww_tile_blit(uint32_t* canvas, uint8_t const tile_num, int x0, int y0) {
         return;
     }
 
-    canvas += y0 * WW_SCREEN_WIDTH + x0;
+    canvas += y0 * (pitch / 4) + x0;
     ww_tile_t* tile = ww_tiles + tile_num;
 
     for (int y = 0; y < height; y++) {
@@ -231,6 +231,6 @@ void ww_tile_blit(uint32_t* canvas, uint8_t const tile_num, int x0, int y0) {
             }
         }
 
-        canvas += WW_SCREEN_WIDTH - width;
+        canvas += (pitch / 4) - width;
     }
 }

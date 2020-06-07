@@ -98,7 +98,12 @@ int ww_backgrnd_scroll_down(unsigned const player, uint8_t const tile) {
     return -1;
 }
 
-void ww_backgrnd_render(uint32_t* const canvas, unsigned const player, unsigned const dx, unsigned const dy) {
+void ww_backgrnd_render(uint32_t* const canvas,
+                        size_t const pitch,
+                        unsigned const player,
+                        unsigned const dx,
+                        unsigned const dy) {
+
     if (player < WW_MAX_PLAYERS) {
         int y0 = -(dy % WW_TILE_SIZE);
 
@@ -106,7 +111,7 @@ void ww_backgrnd_render(uint32_t* const canvas, unsigned const player, unsigned 
             int x0 = -(dx % WW_TILE_SIZE);
 
             for (unsigned x = 0; x < WW_BACKGRND_WIDTH; x++, x0 += WW_TILE_SIZE) {
-                ww_tile_blit(canvas, ww_tiles[player][y][x], x0, y0);
+                ww_tile_blit(canvas, pitch, ww_tiles[player][y][x], x0, y0);
             }
         }
     }

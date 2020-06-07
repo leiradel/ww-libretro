@@ -17,11 +17,11 @@ static retro_environment_t env_cb;
 static retro_log_printf_t log_cb = dummy_log;
 static retro_audio_sample_batch_t audio_cb;
 
-static uint32_t canvas[WW_SCREEN_HEIGHT * WW_SCREEN_WIDTH];
+static uint32_t canvas[WW_SCREEN_WIDTH * WW_SCREEN_HEIGHT * 4];
 
 void retro_get_system_info(struct retro_system_info* const info) {
     info->library_name = WW_PACKAGE;
-    info->library_version = WW_VERSION "(" WW_GITHASH ")";
+    info->library_version = WW_VERSION " (" WW_GITHASH ")";
     info->need_fullpath = true;
     info->block_extract = false;
     info->valid_extensions = "wwg|wwl|wwm";
@@ -109,8 +109,8 @@ void retro_set_input_poll(retro_input_poll_t cb) {
 void retro_get_system_av_info(struct retro_system_av_info* const info) {
     info->geometry.base_width = WW_SCREEN_WIDTH;
     info->geometry.base_height = WW_SCREEN_HEIGHT;
-    info->geometry.max_width = WW_SCREEN_WIDTH;
-    info->geometry.max_height = WW_SCREEN_HEIGHT;
+    info->geometry.max_width = WW_SCREEN_WIDTH * 2;
+    info->geometry.max_height = WW_SCREEN_HEIGHT * 2;
     info->geometry.aspect_ratio = 0.0f;
     info->timing.fps = 60;
     info->timing.sample_rate = 44100;
@@ -138,10 +138,10 @@ void retro_run(void) {
     db++;
 
     ww_backgrnd_clear(0, 0);
-    ww_backgrnd_render(canvas, 0, db >> 4, 0);
-    ww_tile_blit(canvas, 1, x, y);
+    ww_backgrnd_render(canvas, WW_SCREEN_WIDTH * 4 * 2, 0, db >> 4, 0);
+    ww_tile_blit(canvas, WW_SCREEN_WIDTH * 4 * 2, 1, x, y);
 
-    video_cb((void*)canvas, WW_SCREEN_WIDTH, WW_SCREEN_HEIGHT, WW_SCREEN_WIDTH * 4);
+    video_cb((void*)canvas, WW_SCREEN_WIDTH, WW_SCREEN_HEIGHT, WW_SCREEN_WIDTH * 4 * 2);
 }
 
 void retro_deinit(void) {
