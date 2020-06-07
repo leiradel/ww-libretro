@@ -3,6 +3,7 @@
 #include "ww_backgrnd.h"
 #include "ww_config.h"
 #include "ww_filesys.h"
+#include "ww_screen.h"
 #include "ww_tile.h"
 #include "ww_version.h"
 
@@ -17,8 +18,8 @@ static retro_environment_t env_cb;
 static retro_log_printf_t log_cb = dummy_log;
 static retro_audio_sample_batch_t audio_cb;
 
-static uint16_t canvas[WW_SCREEN_WIDTH * WW_SCREEN_HEIGHT * 4];
-static ww_backgrnd_t backgrnd;
+static uint16_t pixels[WW_SCREEN_WIDTH * WW_SCREEN_HEIGHT * 4];
+static ww_screen_t screen;
 
 void retro_get_system_info(struct retro_system_info* const info) {
     info->library_name = WW_PACKAGE;
@@ -55,24 +56,23 @@ bool retro_load_game(struct retro_game_info const* const info) {
         return false;
     }
 
-    if (ww_backgrnd_init(&backgrnd) != 0) {
-        return false;
-    }
-
     if (ww_filesys_init(info->path) != 0) {
-error1:
-        ww_backgrnd_destroy(&backgrnd);
         return false;
     }
 
     if (ww_tile_init() != 0) {
-error2:
+error1:
         ww_filesys_destroy();
-        goto error1;
+        return false;
     }
 
     if (ww_tile_load(0, "/black.png") != 0 || ww_tile_load(1, "/test.png") != 0) {
+error2:
         ww_tile_destroy();
+        goto error1;
+    }
+
+    if (ww_screen_init(&screen, pixels, WW_SCREEN_WIDTH * 2 * 2) != 0) {
         goto error2;
     }
 
@@ -138,11 +138,11 @@ void retro_run(void) {
 
     db++;
 
-    ww_backgrnd_clear(&backgrnd, 0);
-    ww_backgrnd_render(&backgrnd, canvas, WW_SCREEN_WIDTH * 2 * 2, db >> 4, 0);
-    ww_tile_blit(canvas, WW_SCREEN_WIDTH * 2 * 2, 1, x, y);
+    ww_backgrnd_clear(&screen, 0);
+    ww_backgrnd_render(&screen, db >> 4, 0);
+    ww_tile_blit(&screen, 1, x, y);
 
-    video_cb((void*)canvas, WW_SCREEN_WIDTH, WW_SCREEN_HEIGHT, WW_SCREEN_WIDTH * 2 * 2);
+    video_cb((void*)pixels, WW_SCREEN_WIDTH, WW_SCREEN_HEIGHT, WW_SCREEN_WIDTH * 2 * 2);
 }
 
 void retro_deinit(void) {
@@ -185,7 +185,6 @@ bool retro_load_game_special(unsigned const a, struct retro_game_info const* con
 }
 
 void retro_unload_game(void) {
-    ww_backgrnd_destroy(&backgrnd);
     ww_filesys_destroy();
     ww_tile_destroy();
 }
