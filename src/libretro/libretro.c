@@ -18,6 +18,7 @@ static retro_log_printf_t log_cb = dummy_log;
 static retro_audio_sample_batch_t audio_cb;
 
 static uint32_t canvas[WW_SCREEN_WIDTH * WW_SCREEN_HEIGHT * 4];
+static ww_backgrnd_t backgrnd;
 
 void retro_get_system_info(struct retro_system_info* const info) {
     info->library_name = WW_PACKAGE;
@@ -54,13 +55,13 @@ bool retro_load_game(struct retro_game_info const* const info) {
         return false;
     }
 
-    if (ww_backgrnd_init() != 0) {
+    if (ww_backgrnd_init(&backgrnd) != 0) {
         return false;
     }
 
     if (ww_filesys_init(info->path) != 0) {
 error1:
-        ww_backgrnd_destroy();
+        ww_backgrnd_destroy(&backgrnd);
         return false;
     }
 
@@ -137,8 +138,8 @@ void retro_run(void) {
 
     db++;
 
-    ww_backgrnd_clear(0, 0);
-    ww_backgrnd_render(canvas, WW_SCREEN_WIDTH * 4 * 2, 0, db >> 4, 0);
+    ww_backgrnd_clear(&backgrnd, 0);
+    ww_backgrnd_render(canvas, WW_SCREEN_WIDTH * 4 * 2, &backgrnd, db >> 4, 0);
     ww_tile_blit(canvas, WW_SCREEN_WIDTH * 4 * 2, 1, x, y);
 
     video_cb((void*)canvas, WW_SCREEN_WIDTH, WW_SCREEN_HEIGHT, WW_SCREEN_WIDTH * 4 * 2);
@@ -184,7 +185,7 @@ bool retro_load_game_special(unsigned const a, struct retro_game_info const* con
 }
 
 void retro_unload_game(void) {
-    ww_backgrnd_destroy();
+    ww_backgrnd_destroy(&backgrnd);
     ww_filesys_destroy();
     ww_tile_destroy();
 }
