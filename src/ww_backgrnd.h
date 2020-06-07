@@ -25,6 +25,6 @@ void ww_backgrnd_scroll_right(ww_backgrnd_t* bgnd, uint8_t tile);
 void ww_backgrnd_scroll_up(ww_backgrnd_t* bgnd, uint8_t tile);
 void ww_backgrnd_scroll_down(ww_backgrnd_t* bgnd, uint8_t tile);
 
-void ww_backgrnd_render(uint32_t* canvas, size_t pitch, ww_backgrnd_t const* bgnd, unsigned dx, unsigned dy);
+void ww_backgrnd_render(ww_backgrnd_t const* bgnd, uint32_t* canvas, size_t pitch, unsigned dx, unsigned dy);
 
 #endif // WW_BACKGRND_H

@@ -139,7 +139,7 @@ void retro_run(void) {
     db++;
 
     ww_backgrnd_clear(&backgrnd, 0);
-    ww_backgrnd_render(canvas, WW_SCREEN_WIDTH * 4 * 2, &backgrnd, db >> 4, 0);
+    ww_backgrnd_render(&backgrnd, canvas, WW_SCREEN_WIDTH * 4 * 2, db >> 4, 0);
     ww_tile_blit(canvas, WW_SCREEN_WIDTH * 4 * 2, 1, x, y);
 
     video_cb((void*)canvas, WW_SCREEN_WIDTH, WW_SCREEN_HEIGHT, WW_SCREEN_WIDTH * 4 * 2);
