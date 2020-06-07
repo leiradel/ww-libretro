@@ -343,6 +343,10 @@ int ww_filesys_init(char const* const path) {
     ww_filesys_entries.count = 0;
     ww_filesys_entries.reserved = 0;
 
+    ww_filesys_fps.elements = NULL;
+    ww_filesys_fps.count = 0;
+    ww_filesys_fps.reserved = 0;
+
     struct stat stbuf;
 
     if (stat(path, &stbuf) != 0) {
