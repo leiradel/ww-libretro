@@ -48,7 +48,6 @@ ZLIB_OBJ_FILES = \
 WW_OBJ_FILES = \
 	src/ww_backgrnd.o \
 	src/ww_filesys.o \
-	src/ww_screen.o \
 	src/ww_tile.o
 
 OBJ_FILES = \
