@@ -15,13 +15,6 @@ typedef struct {
 ww_backgrnd_t;
 
 typedef struct {
-    int x, y;
-    uint8_t tile_num;
-}
-ww_sprite_t;
-
-typedef struct {
-    ww_sprite_t sprites[WW_MAX_SPRITES];
     uint8_t tiles[WW_SCREEN_HEIGHT][WW_SCREEN_WIDTH];
     uint32_t collided[WW_MAX_SPRITES];
     size_t count;
@@ -29,7 +22,7 @@ typedef struct {
 ww_sprites_t;
 
 typedef struct {
-    uint16_t* pixels;
+    uint32_t* pixels;
     size_t pitch;
 }
 ww_canvas_t;
@@ -41,7 +34,7 @@ typedef struct {
 }
 ww_screen_t;
 
-int  ww_screen_init(ww_screen_t* screen, uint16_t* pixels, size_t pitch);
+int  ww_screen_init(ww_screen_t* screen, uint32_t* pixels, size_t pitch);
 void ww_screen_destroy(ww_screen_t* screen);
 
 #endif // WW_SCREEN_H
