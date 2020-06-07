@@ -16,4 +16,4 @@ int  ww_backgrnd_scroll_down(unsigned player, uint8_t tile);
 
 void ww_backgrnd_render(uint32_t* canvas, unsigned player, unsigned dx, unsigned dy);
 
-#endif /* WW_BACKGRND_H */
+#endif // WW_BACKGRND_H
