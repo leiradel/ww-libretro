@@ -14,8 +14,7 @@ typedef uint8_t ww_tile_t[WW_TILE_SIZE][WW_TILE_SIZE];
 static ww_tile_t ww_tiles[WW_MAX_TILES];
 
 // https://lospec.com/palette-list/aap-64
-static uint32_t ww_tile_palette[] = {
-    0x000000, // Palette entry 0 is transparent.
+static uint32_t const ww_tile_palette_conv[] = {
     0x060608, 0x141013, 0x3b1725, 0x73172d, 0xb4202a, 0xdf3e23, 0xfa6a0a, 0xf9a31b,
     0xffd541, 0xfffc40, 0xd6f264, 0x9cdb43, 0x59c135, 0x14a02e, 0x1a7a3e, 0x24523b,
     0x122020, 0x143464, 0x285cc4, 0x249fde, 0x20d6c7, 0xa6fcdb, 0xffffff, 0xfef3c0,
@@ -24,6 +23,19 @@ static uint32_t ww_tile_palette[] = {
     0x6d758d, 0x4a5462, 0x333941, 0x422433, 0x5b3138, 0x8e5252, 0xba756a, 0xe9b5a3,
     0xe3e6ff, 0xb9bffb, 0x849be4, 0x588dbe, 0x477d85, 0x23674e, 0x328464, 0x5daf8d,
     0x92dcba, 0xcdf7e2, 0xe4d2aa, 0xc7b08b, 0xa08662, 0x796755, 0x5a4e44, 0x423934
+};
+
+// https://stackoverflow.com/a/9069480
+static uint16_t const ww_tile_palette[] = {
+    0x0000, // Palette entry 0 is transparent
+    0x0821, 0x1082, 0x38c4, 0x70c5, 0xb105, 0xd9e4, 0xf341, 0xf503,
+    0xfea8, 0xffc8, 0xd78c, 0x9ec8, 0x5e06, 0x1506, 0x1bc8, 0x2287,
+    0x1104, 0x11ac, 0x2af8, 0x24fb, 0x26b8, 0xa7db, 0xffff, 0xff97,
+    0xf6b6, 0xf512, 0xe34e, 0xba53, 0x79d0, 0x41aa, 0x2106, 0x20e3,
+    0x3165, 0x7207, 0xbba9, 0xdd2c, 0xf693, 0xdefc, 0xb5d9, 0x8c95,
+    0x6bb1, 0x4aac, 0x31c8, 0x4126, 0x5987, 0x8a8a, 0xbbad, 0xe5b4,
+    0xe73f, 0xb5ff, 0x84dc, 0x5c77, 0x4bf0, 0x2329, 0x342c, 0x5d71,
+    0x96d7, 0xcfbb, 0xe695, 0xc571, 0x9c2c, 0x7b2a, 0x5a68, 0x41c6
 };
 
 int ww_tile_init(void) {
@@ -159,23 +171,23 @@ error2:
             float const g = (color >> 8) & 0xff;
             float const b = (color >> 16) & 0xff;
 
-            float dr = r - ((ww_tile_palette[1] >> 16) & 0xff);
-            float dg = g - ((ww_tile_palette[1] >> 8) & 0xff);
-            float db = b - (ww_tile_palette[1] & 0xff);
+            float dr = r - ((ww_tile_palette_conv[0] >> 16) & 0xff);
+            float dg = g - ((ww_tile_palette_conv[0] >> 8) & 0xff);
+            float db = b - (ww_tile_palette_conv[0] & 0xff);
 
             float min_distance = dr * dr + dg * dg + db * db;
             size_t min_index = 1;
 
-            for (size_t i = 2; i < sizeof(ww_tile_palette) / sizeof(ww_tile_palette[0]); i++) {
-                dr = r - ((ww_tile_palette[i] >> 16) & 0xff);
-                dg = g - ((ww_tile_palette[i] >> 8) & 0xff);
-                db = b - (ww_tile_palette[i] & 0xff);
+            for (size_t i = 1; i < sizeof(ww_tile_palette_conv) / sizeof(ww_tile_palette_conv[0]); i++) {
+                dr = r - ((ww_tile_palette_conv[i] >> 16) & 0xff);
+                dg = g - ((ww_tile_palette_conv[i] >> 8) & 0xff);
+                db = b - (ww_tile_palette_conv[i] & 0xff);
 
                 float distance = dr * dr + dg * dg + db * db;
 
                 if (distance < min_distance) {
                     min_distance = distance;
-                    min_index = i;
+                    min_index = i + 1;
                 }
             }
 
@@ -186,7 +198,7 @@ error2:
     return 0;
 }
 
-void ww_tile_blit(uint32_t* canvas, size_t const pitch, uint8_t const tile_num, int x0, int y0) {
+void ww_tile_blit(uint16_t* canvas, size_t const pitch, uint8_t const tile_num, int x0, int y0) {
     int width = WW_TILE_SIZE;
     int ox = 0;
 
@@ -219,7 +231,7 @@ void ww_tile_blit(uint32_t* canvas, size_t const pitch, uint8_t const tile_num, 
         return;
     }
 
-    canvas += y0 * (pitch / 4) + x0;
+    canvas += y0 * (pitch / 2) + x0;
     ww_tile_t* tile = ww_tiles + tile_num;
 
     for (int y = 0; y < height; y++) {
@@ -231,6 +243,6 @@ void ww_tile_blit(uint32_t* canvas, size_t const pitch, uint8_t const tile_num, 
             }
         }
 
-        canvas += (pitch / 4) - width;
+        canvas += (pitch / 2) - width;
     }
 }

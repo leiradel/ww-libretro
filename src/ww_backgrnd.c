@@ -57,7 +57,7 @@ void ww_backgrnd_scroll_down(ww_backgrnd_t* const bgnd, uint8_t const tile) {
 }
 
 void ww_backgrnd_render(ww_backgrnd_t const* const bgnd,
-                        uint32_t* const canvas,
+                        uint16_t* const canvas,
                         size_t const pitch,
                         unsigned const dx,
                         unsigned const dy) {
