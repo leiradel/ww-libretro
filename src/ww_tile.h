@@ -6,6 +6,8 @@
 #include <stdint.h>
 #include <stddef.h>
 
+extern uint32_t const ww_tile_palette[];
+
 int  ww_tile_init(void);
 void ww_tile_destroy(void);
 

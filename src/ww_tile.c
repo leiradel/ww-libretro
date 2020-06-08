@@ -14,7 +14,7 @@ typedef uint8_t ww_tile_t[WW_TILE_SIZE][WW_TILE_SIZE];
 static ww_tile_t ww_tiles[WW_MAX_TILES];
 
 // https://lospec.com/palette-list/aap-64
-static uint32_t const ww_tile_palette[] = {
+uint32_t const ww_tile_palette[] = {
     0x000000, // Palette entry 0 is transparent
     0x060608, 0x141013, 0x3b1725, 0x73172d, 0xb4202a, 0xdf3e23, 0xfa6a0a, 0xf9a31b,
     0xffd541, 0xfffc40, 0xd6f264, 0x9cdb43, 0x59c135, 0x14a02e, 0x1a7a3e, 0x24523b,
