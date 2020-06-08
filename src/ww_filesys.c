@@ -38,7 +38,7 @@ typedef struct {
 ww_filesys_entry_t;
 
 typedef int (*ww_filesys_folder_callback_t)(char const*, char const*);
-typedef int (*ww_filesys_tar_callback_t)(FILE* tar, long, long, char const*);
+typedef int (*ww_filesys_tar_callback_t)(FILE*, long, long, char const*);
 
 static struct {
     ww_filesys_entry_t* elements;
