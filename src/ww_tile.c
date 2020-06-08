@@ -198,6 +198,10 @@ error2:
     return 0;
 }
 
+void ww_tile_clear(ww_screen_t* const screen) {
+    memset(&screen->collision, 0, sizeof(screen->collision));
+}
+
 void ww_tile_blit(ww_screen_t* const screen, uint8_t const tile_num, int x0, int y0) {
     int width = WW_TILE_SIZE;
     int ox = 0;
@@ -233,7 +237,10 @@ void ww_tile_blit(ww_screen_t* const screen, uint8_t const tile_num, int x0, int
 
     size_t const pitch = screen->canvas.pitch / 2;
     uint16_t* pixels = screen->canvas.pixels + y0 * pitch + x0;
-    ww_tile_t* tile = ww_tiles + tile_num;
+    ww_tile_t* const tile = ww_tiles + tile_num;
+
+    uint32_t const tile_bit = UINT32_C(1) << tile_num;
+    uint32_t collided = 0;
 
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++, pixels++) {
@@ -241,9 +248,21 @@ void ww_tile_blit(ww_screen_t* const screen, uint8_t const tile_num, int x0, int
 
             if (index != 0) {
                 *pixels = ww_tile_palette[index];
+
+                uint32_t const collisions = screen->collision.tiles[y0 + y][x0 + x] | tile_bit;
+                collided |= screen->collision.tiles[y0 + y][x0 + x] = collisions;
             }
         }
 
         pixels += pitch - width;
     }
+
+    while (collided != 0) {
+        
+    }
+}
+
+int ww_tile_collided(ww_screen_t* screen, uint8_t tile1_num, uint8_t tile2_num) {
+    uint32_t const tile1_bit = UINT32_C(1) << tile1_num;
+    return (screen->collision.collided[tile2_num] & tile1_bit) != 0;
 }
