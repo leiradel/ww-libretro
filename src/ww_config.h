@@ -8,7 +8,10 @@
 #define WW_MAX_TILES (32)
 
 // The maximum *total* number of sprites.
-#define WW_MAX_SPRITES (16)
+#define WW_MAX_SPRITES (32)
+
+// The maximum number of types for the collision tests.
+#define WW_MAX_COLLISION_TYPES (8)
 
 // Screen dimensions for one player.
 #define WW_SCREEN_WIDTH  (240)
