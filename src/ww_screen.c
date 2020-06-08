@@ -19,6 +19,6 @@ void ww_screen_destroy(ww_screen_t* const screen) {
 
 void ww_screen_clear(ww_screen_t* const screen) {
     ww_backgrnd_clear(screen, 0);
-    ww_tile_clear(screen);
     ww_sprite_clear(screen);
+    ww_tile_clear(screen);
 }

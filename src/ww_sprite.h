@@ -6,6 +6,6 @@
 #include <stdint.h>
 
 void ww_sprite_clear(ww_screen_t* screen);
-int  ww_sprite_blit(ww_screen_t* screen, uint8_t tile_num, int x0, int y0);
+int  ww_sprite_blit(ww_screen_t* screen, uint8_t tile_num, int x0, int y0, uint8_t type);
 
-#endif // WW_TILE_H
+#endif // WW_SPRITE_H

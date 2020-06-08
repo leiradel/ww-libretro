@@ -58,7 +58,7 @@ void ww_backgrnd_render(ww_screen_t* const screen, unsigned const dx, unsigned c
         int x0 = -(dx % WW_TILE_SIZE);
 
         for (unsigned x = 0; x < WW_BACKGRND_WIDTH; x++, x0 += WW_TILE_SIZE) {
-            ww_tile_blit(screen, screen->background.tiles[y][x], x0, y0);
+            ww_tile_blit(screen, screen->background.tiles[y][x], x0, y0, 0);
         }
     }
 }

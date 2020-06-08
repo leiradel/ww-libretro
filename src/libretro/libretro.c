@@ -4,6 +4,7 @@
 #include "ww_config.h"
 #include "ww_filesys.h"
 #include "ww_screen.h"
+#include "ww_sprite.h"
 #include "ww_tile.h"
 #include "ww_version.h"
 
@@ -20,6 +21,7 @@ static retro_audio_sample_batch_t audio_cb;
 
 static uint32_t pixels[WW_SCREEN_WIDTH * WW_SCREEN_HEIGHT * 4];
 static ww_screen_t screen;
+static struct {int x, y;} obstacles[8];
 
 void retro_get_system_info(struct retro_system_info* const info) {
     info->library_name = WW_PACKAGE;
@@ -74,6 +76,13 @@ error2:
 
     if (ww_screen_init(&screen, pixels, WW_SCREEN_WIDTH * sizeof(uint32_t) * 2) != 0) {
         goto error2;
+    }
+
+    srand(2);
+
+    for (size_t i = 0; i < sizeof(obstacles) / sizeof(obstacles[0]); i++) {
+        obstacles[i].x = rand() % (WW_SCREEN_WIDTH - WW_TILE_SIZE);
+        obstacles[i].y = rand() % (WW_SCREEN_HEIGHT - WW_TILE_SIZE);
     }
 
     return true;
@@ -138,9 +147,17 @@ void retro_run(void) {
 
     db++;
 
-    ww_backgrnd_clear(&screen, 0);
+    ww_screen_clear(&screen);
     ww_backgrnd_render(&screen, db >> 4, 0);
-    ww_tile_blit(&screen, 1, x, y);
+    ww_sprite_blit(&screen, 1, x, y, 1);
+
+    for (size_t i = 0; i < sizeof(obstacles) / sizeof(obstacles[0]); i++) {
+        ww_sprite_blit(&screen, 1, obstacles[i].x, obstacles[i].y, 2);
+    }
+
+    if (ww_tile_collided(&screen, 2, 1)) {
+        ww_sprite_blit(&screen, 1, WW_SCREEN_WIDTH - WW_TILE_SIZE, WW_SCREEN_HEIGHT - WW_TILE_SIZE, 0);
+    }
 
     video_cb((void*)pixels, WW_SCREEN_WIDTH, WW_SCREEN_HEIGHT, WW_SCREEN_WIDTH * sizeof(uint32_t) * 2);
 }

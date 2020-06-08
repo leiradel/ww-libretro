@@ -20,8 +20,7 @@ typedef struct {
 ww_sprites_t;
 
 typedef struct {
-    uint32_t tiles[WW_SCREEN_HEIGHT][WW_SCREEN_WIDTH];
-    uint32_t collided[WW_MAX_TILES];
+    uint8_t collided[WW_MAX_COLLISION_TYPES];
 }
 ww_colldata_t;
 

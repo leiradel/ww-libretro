@@ -32,4 +32,7 @@
 // Number of sfxr voices that can play simultaneously.
 #define WW_MAX_VOICES (3)
 
+// Static assertions.
+typedef char WW_MAX_COLLISION_TYPES_VALID[WW_MAX_COLLISION_TYPES <= 8 ? 1 : -1];
+
 #endif // WW_CONFIG_H

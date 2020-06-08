@@ -190,7 +190,16 @@ void ww_tile_clear(ww_screen_t* const screen) {
     memset(&screen->collision, 0, sizeof(screen->collision));
 }
 
-void ww_tile_blit(ww_screen_t* const screen, uint8_t const tile_num, int x0, int y0) {
+int ww_tile_blit(ww_screen_t* const screen,
+                 uint8_t const tile_num,
+                 int x0,
+                 int y0,
+                 uint8_t const type) {
+
+    if (tile_num >= WW_MAX_TILES || type > 8) {
+        return -1;
+    }
+
     int width = WW_TILE_SIZE;
     int ox = 0;
 
@@ -204,7 +213,7 @@ void ww_tile_blit(ww_screen_t* const screen, uint8_t const tile_num, int x0, int
     }
 
     if (width <= 0) {
-        return;
+        return 0;
     }
 
     int height = WW_TILE_SIZE;
@@ -220,33 +229,68 @@ void ww_tile_blit(ww_screen_t* const screen, uint8_t const tile_num, int x0, int
     }
 
     if (height <= 0) {
-        return;
+        return 0;
     }
 
     size_t const pitch = screen->canvas.pitch / 4;
     uint32_t* pixels = screen->canvas.pixels + y0 * pitch + x0;
     ww_tile_t* const tile = ww_tiles + tile_num;
 
-    //uint32_t const tile_bit = UINT32_C(1) << tile_num;
-    //uint32_t collided = 0;
+    if (type == 0) {
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++, pixels++) {
+                uint8_t const index = (*tile)[oy + y][ox + x];
 
-    for (int y = 0; y < height; y++) {
-        for (int x = 0; x < width; x++, pixels++) {
-            uint8_t const index = (*tile)[oy + y][ox + x];
-
-            if (index != 0) {
-                *pixels = ww_tile_palette[index];
-
-                //uint32_t const collisions = screen->collision.tiles[y0 + y][x0 + x] | tile_bit;
-                //collided |= screen->collision.tiles[y0 + y][x0 + x] = collisions;
+                if (index != 0) {
+                    *pixels = ww_tile_palette[index];
+                }
             }
+
+            pixels += pitch - width;
+        }
+    }
+    else {
+        uint32_t const type_bit = UINT32_C(0x00800000) << type;
+        uint32_t collided = 0;
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++, pixels++) {
+                uint8_t const index = (*tile)[oy + y][ox + x];
+
+                if (index != 0) {
+                    uint32_t const types = *pixels & UINT32_C(0xff000000);
+
+                    if (types != 0) {
+                        int a = types;
+                        (void)a;
+                    }
+
+                    *pixels = ww_tile_palette[index] | types | type_bit;
+                    collided |= types;
+                }
+            }
+
+            pixels += pitch - width;
         }
 
-        pixels += pitch - width;
+        collided >>= 24;
+        screen->collision.collided[type - 1] |= collided;
+
+        for (size_t i = 0; i < WW_MAX_COLLISION_TYPES; i++, collided >>= 1) {
+            if ((collided & 1) != 0) {
+                screen->collision.collided[i] |= type_bit >> 24;
+            }
+        }
     }
+
+    return 0;
 }
 
-int ww_tile_collided(ww_screen_t* screen, uint8_t tile1_num, uint8_t tile2_num) {
-    uint32_t const tile1_bit = UINT32_C(1) << tile1_num;
-    return (screen->collision.collided[tile2_num] & tile1_bit) != 0;
+int ww_tile_collided(ww_screen_t const* const screen, uint8_t type1, uint8_t type2) {
+    if (--type1 >= WW_MAX_COLLISION_TYPES || --type2 >= WW_MAX_COLLISION_TYPES) {
+        return 0;
+    }
+
+    uint8_t const type1_bit = UINT32_C(1) << type1;
+    return (screen->collision.collided[type2] & type1_bit) != 0;
 }
