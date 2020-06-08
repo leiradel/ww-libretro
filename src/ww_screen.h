@@ -26,7 +26,7 @@ typedef struct {
 ww_colldata_t;
 
 typedef struct {
-    uint16_t* pixels;
+    uint32_t* pixels;
     size_t pitch;
 }
 ww_canvas_t;
@@ -39,7 +39,7 @@ typedef struct {
 }
 ww_screen_t;
 
-int  ww_screen_init(ww_screen_t* screen, uint16_t* pixels, size_t pitch);
+int  ww_screen_init(ww_screen_t* screen, uint32_t* pixels, size_t pitch);
 void ww_screen_destroy(ww_screen_t* screen);
 
 void ww_screen_clear(ww_screen_t* screen);

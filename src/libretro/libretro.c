@@ -18,7 +18,7 @@ static retro_environment_t env_cb;
 static retro_log_printf_t log_cb = dummy_log;
 static retro_audio_sample_batch_t audio_cb;
 
-static uint16_t pixels[WW_SCREEN_WIDTH * WW_SCREEN_HEIGHT * 4];
+static uint32_t pixels[WW_SCREEN_WIDTH * WW_SCREEN_HEIGHT * 4];
 static ww_screen_t screen;
 
 void retro_get_system_info(struct retro_system_info* const info) {
@@ -49,10 +49,10 @@ void retro_init(void) {
 }
 
 bool retro_load_game(struct retro_game_info const* const info) {
-    enum retro_pixel_format fmt = RETRO_PIXEL_FORMAT_RGB565;
+    enum retro_pixel_format fmt = RETRO_PIXEL_FORMAT_XRGB8888;
 
     if (!env_cb(RETRO_ENVIRONMENT_SET_PIXEL_FORMAT, &fmt)) {
-        log_cb(RETRO_LOG_ERROR, WW_PACKAGE " needs RGB565\n");
+        log_cb(RETRO_LOG_ERROR, WW_PACKAGE " needs XRGB8888\n");
         return false;
     }
 
@@ -72,7 +72,7 @@ error2:
         goto error1;
     }
 
-    if (ww_screen_init(&screen, pixels, WW_SCREEN_WIDTH * 2 * 2) != 0) {
+    if (ww_screen_init(&screen, pixels, WW_SCREEN_WIDTH * sizeof(uint32_t) * 2) != 0) {
         goto error2;
     }
 
@@ -142,7 +142,7 @@ void retro_run(void) {
     ww_backgrnd_render(&screen, db >> 4, 0);
     ww_tile_blit(&screen, 1, x, y);
 
-    video_cb((void*)pixels, WW_SCREEN_WIDTH, WW_SCREEN_HEIGHT, WW_SCREEN_WIDTH * 2 * 2);
+    video_cb((void*)pixels, WW_SCREEN_WIDTH, WW_SCREEN_HEIGHT, WW_SCREEN_WIDTH * sizeof(uint32_t) * 2);
 }
 
 void retro_deinit(void) {
